@@ -134,6 +134,104 @@ export default async function DashboardPage() {
           </Card>
         )}
       </main>
+
+
+      {/* Footer */}
+<footer className="bg-slate-950 text-white mt-16 border-t border-slate-800">
+  <div className="container mx-auto px-4 py-12">
+
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+
+      {/* About */}
+      <div>
+        <div className="flex items-center gap-2 mb-4">
+<div className="w-24 h-24 rounded-full overflow-hidden border border-white/20">
+  <img
+    src="/logoz.png"
+    alt="Logo"
+    className="w-full h-full object-cover"
+  />
+</div>
+          <h3 className="font-bold text-lg">منصة بناء السيرة الذاتية</h3>
+        </div>
+
+        <p className="text-slate-300 text-sm leading-7">
+          منصة مجانية تهدف إلى دعم الطلاب والشباب والباحثين عن العمل
+          عبر توفير أدوات حديثة لإنشاء سيرة ذاتية احترافية باللغة العربية
+          وبمعايير تواكب سوق العمل المحلي والدولي.
+        </p>
+      </div>
+
+      {/* Mission */}
+      <div>
+        <h3 className="font-bold text-lg mb-4">رسالتنا</h3>
+
+        <p className="text-slate-300 text-sm leading-7">
+          نؤمن أن الوصول إلى فرص العمل يبدأ من تقديم المهارات والخبرات
+          بطريقة احترافية. لذلك نعمل على تمكين الشباب رقمياً وتسهيل
+          دخولهم إلى سوق العمل وبناء مستقبل أفضل.
+        </p>
+      </div>
+
+      {/* Organization */}
+      <div>
+        <h3 className="font-bold text-lg mb-4">عن المشروع</h3>
+
+<p className="text-slate-300 text-sm leading-7">
+  هذا المشروع مقدم من
+
+  <a
+    href="https://www.nakhla-found.com/"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-white font-semibold hover:text-primary transition-colors underline underline-offset-4"
+  >
+    {' '}مؤسسة نخلة لتنمية ورعاية الأمومة والطفولة
+  </a>
+
+  ، ضمن جهودها في دعم التعليم والتأهيل المهني
+  وتعزيز المهارات الرقمية لدى الشباب الطامحين بالعمل
+  والاستقرار وبناء مستقبل أكثر أملاً.
+</p>
+      </div>
+
+    </div>
+
+    {/* Bottom */}
+    <div className="border-t border-slate-800 mt-10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-400">
+
+      <div className="flex items-center gap-2">
+  <img
+    src="/logoz.png"
+    alt="Logo"
+    className="h-4 w-4 object-cover"
+  />        <span>منصة بناء السيرة الذاتية</span>
+      </div>
+
+      <p className="text-center">
+        © 2026 جميع الحقوق محفوظة — مؤسسة نخلة لتنمية ورعاية الأمومة والطفولة
+      </p>
+
+<Link
+  href="/cookies"
+  className="text-slate-300 hover:text-white transition-colors"
+>
+  سياسة ملفات تعريف الارتباط
+</Link>
+<Link href="/privacy" className="text-slate-300 hover:text-white">
+  سياسة الخصوصية
+</Link>
+
+<Link href="/terms" className="text-slate-300 hover:text-white">
+  الشروط والأحكام
+</Link>
+
+<Link href="/mentions-legales" className="text-slate-300 hover:text-white">
+  Mentions légales
+</Link>
+    </div>
+  </div>
+</footer>
     </div>
   )
 }

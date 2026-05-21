@@ -69,7 +69,7 @@ export function PersonalInfoForm() {
           id="location"
           value={personalInfo.location}
           onChange={(e) => updatePersonalInfo('location', e.target.value)}
-          placeholder="الرياض، المملكة العربية السعودية"
+          placeholder=" الجمهورية العربية السورية"
         />
       </div>
 
