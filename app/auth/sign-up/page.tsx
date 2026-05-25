@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -17,8 +17,8 @@ import {
 } from '@/components/ui/card'
 import { FileText, Loader2 } from 'lucide-react'
 
-export default function SignUpPage() {
-  const [email, setEmail] = useState('')
+function SignUpContent() {
+    const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -220,5 +220,12 @@ export default function SignUpPage() {
         </form>
       </Card>
     </div>
+  )
+}
+export default function SignUpPage() {
+  return (
+    <Suspense fallback={null}>
+      <SignUpContent />
+    </Suspense>
   )
 }
