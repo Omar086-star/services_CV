@@ -1,35 +1,42 @@
 'use client'
 
 import { useRef } from 'react'
-import { useSearchParams } from 'next/navigation'
 import { useReactToPrint } from 'react-to-print'
 import { Button } from '@/components/ui/button'
 import { Download } from 'lucide-react'
 import { CVPreview } from './cv-preview'
 
 export function PDFExport() {
-  const previewRef = useRef<HTMLDivElement>(null)
-  const searchParams = useSearchParams()
-
-  const isEn = searchParams.get('lang') === 'en'
+  const printRef = useRef<HTMLDivElement>(null)
 
   const handlePrint = useReactToPrint({
-    contentRef: previewRef,
-    documentTitle: isEn ? 'resume' : 'cv',
+    contentRef: printRef,
+
+    documentTitle: 'CV',
+
     pageStyle: `
-      @page {
-        size: A4;
-        margin: 0;
+      @page{
+        size:A4 portrait;
+        margin:0;
       }
 
-      body {
-        margin: 0;
-        background: white;
+      html,body{
+        width:210mm;
+        height:297mm;
+        margin:0;
+        padding:0;
+        background:white;
       }
 
-      * {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
+      *{
+        -webkit-print-color-adjust:exact !important;
+        print-color-adjust:exact !important;
+      }
+
+      .print-container{
+        width:210mm !important;
+        min-height:297mm !important;
+        overflow:hidden !important;
       }
     `,
   })
@@ -41,15 +48,20 @@ export function PDFExport() {
         className="w-full"
         size="lg"
       >
-        <Download className={isEn ? 'h-5 w-5 mr-2' : 'h-5 w-5 ml-2'} />
-        {isEn ? 'Download PDF' : 'تحميل PDF'}
+        <Download className="h-5 w-5 ml-2" />
+        تحميل PDF
       </Button>
 
+      {/* خارج الشاشة وليس داخل الواجهة */}
       <div
-        ref={previewRef}
-        className="bg-white"
+        className="fixed -left-[9999px] top-0"
       >
-        <CVPreview />
+        <div
+          ref={printRef}
+          className="print-container bg-white"
+        >
+          <CVPreview />
+        </div>
       </div>
     </>
   )

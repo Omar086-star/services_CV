@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/card'
 import { FileText, Loader2 } from 'lucide-react'
 
-export default function LoginPage() {
+function LoginContent() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -33,7 +33,6 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-
     setIsLoading(true)
     setError(null)
 
@@ -43,12 +42,7 @@ export default function LoginPage() {
     })
 
     if (error) {
-      setError(
-        isEn
-          ? 'Incorrect email or password'
-          : 'البريد الإلكتروني أو كلمة المرور غير صحيحة'
-      )
-
+      setError(isEn ? 'Incorrect email or password' : 'البريد الإلكتروني أو كلمة المرور غير صحيحة')
       setIsLoading(false)
       return
     }
@@ -62,20 +56,6 @@ export default function LoginPage() {
       dir={isEn ? 'ltr' : 'rtl'}
       className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-slate-100 p-4"
     >
-      <div className="absolute top-6 left-6 flex items-center gap-2">
-        <Link href="/auth/login?lang=ar">
-          <Button variant="outline" size="sm">
-            🇸🇦 العربية
-          </Button>
-        </Link>
-
-        <Link href="/auth/login?lang=en">
-          <Button variant="outline" size="sm">
-            🇺🇸 English
-          </Button>
-        </Link>
-      </div>
-
       <Card className="w-full max-w-md">
         <CardHeader className="text-center space-y-4">
           <div className="mx-auto w-16 h-16 bg-primary rounded-2xl flex items-center justify-center">
@@ -88,9 +68,7 @@ export default function LoginPage() {
             </CardTitle>
 
             <CardDescription className="mt-2">
-              {isEn
-                ? 'Login to access your CV dashboard'
-                : 'سجل دخولك للوصول إلى سيرتك الذاتية'}
+              {isEn ? 'Login to access your CV' : 'سجل دخولك للوصول إلى سيرتك الذاتية'}
             </CardDescription>
           </div>
         </CardHeader>
@@ -107,7 +85,6 @@ export default function LoginPage() {
               <Label htmlFor="email">
                 {isEn ? 'Email Address' : 'البريد الإلكتروني'}
               </Label>
-
               <Input
                 id="email"
                 type="email"
@@ -124,7 +101,6 @@ export default function LoginPage() {
               <Label htmlFor="password">
                 {isEn ? 'Password' : 'كلمة المرور'}
               </Label>
-
               <Input
                 id="password"
                 type="password"
@@ -139,20 +115,11 @@ export default function LoginPage() {
           </CardContent>
 
           <CardFooter className="flex flex-col gap-4">
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading}
-            >
+            <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? (
                 <>
-                  <Loader2
-                    className={isEn ? 'mr-2 h-4 w-4 animate-spin' : 'ml-2 h-4 w-4 animate-spin'}
-                  />
-
-                  {isEn
-                    ? 'Logging in...'
-                    : 'جارٍ تسجيل الدخول...'}
+                  <Loader2 className={isEn ? 'mr-2 h-4 w-4 animate-spin' : 'ml-2 h-4 w-4 animate-spin'} />
+                  {isEn ? 'Logging in...' : 'جارٍ تسجيل الدخول...'}
                 </>
               ) : (
                 isEn ? 'Login' : 'تسجيل الدخول'
@@ -160,22 +127,25 @@ export default function LoginPage() {
             </Button>
 
             <p className="text-sm text-muted-foreground text-center">
-              {isEn
-                ? "Don't have an account?"
-                : 'ليس لديك حساب؟'}{' '}
-
+              {isEn ? "Don't have an account?" : 'ليس لديك حساب؟'}{' '}
               <Link
                 href={`/auth/sign-up?lang=${lang}`}
                 className="text-primary hover:underline font-medium"
               >
-                {isEn
-                  ? 'Create new account'
-                  : 'إنشاء حساب جديد'}
+                {isEn ? 'Create account' : 'إنشاء حساب جديد'}
               </Link>
             </p>
           </CardFooter>
         </form>
       </Card>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginContent />
+    </Suspense>
   )
 }
