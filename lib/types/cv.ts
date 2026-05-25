@@ -1,4 +1,27 @@
 // CV Data Types
+
+export type CVLanguage = 'ar' | 'en'
+
+export type SkillLevel =
+  | 'مبتدئ'
+  | 'متوسط'
+  | 'متقدم'
+  | 'خبير'
+  | 'Beginner'
+  | 'Intermediate'
+  | 'Advanced'
+  | 'Expert'
+
+export type LanguageLevel =
+  | 'مبتدئ'
+  | 'متوسط'
+  | 'متقدم'
+  | 'لغة أم'
+  | 'Beginner'
+  | 'Intermediate'
+  | 'Advanced'
+  | 'Native'
+
 export interface PersonalInfo {
   fullName: string
   jobTitle: string
@@ -33,13 +56,13 @@ export interface Education {
 export interface Skill {
   id: string
   name: string
-  level: 'مبتدئ' | 'متوسط' | 'متقدم' | 'خبير'
+  level: SkillLevel
 }
 
 export interface Language {
   id: string
   name: string
-  level: 'مبتدئ' | 'متوسط' | 'متقدم' | 'لغة أم'
+  level: LanguageLevel
 }
 
 export interface Project {
@@ -81,6 +104,7 @@ export interface CV {
   id: string
   user_id: string
   title: string
+  language?: CVLanguage
   template: 'modern' | 'minimal'
   data: CVData
   theme_settings: ThemeSettings
@@ -90,7 +114,7 @@ export interface CV {
   updated_at: string
 }
 
-export type CVSection = 
+export type CVSection =
   | 'personalInfo'
   | 'experiences'
   | 'education'
@@ -137,7 +161,7 @@ export const ARABIC_FONTS = [
   { name: 'Almarai', value: 'Almarai' },
 ] as const
 
-export const SECTION_LABELS: Record<CVSection, string> = {
+export const SECTION_LABELS_AR: Record<CVSection, string> = {
   personalInfo: 'المعلومات الشخصية',
   experiences: 'الخبرات العملية',
   education: 'التعليم',
@@ -146,3 +170,15 @@ export const SECTION_LABELS: Record<CVSection, string> = {
   projects: 'المشاريع',
   certificates: 'الشهادات',
 }
+
+export const SECTION_LABELS_EN: Record<CVSection, string> = {
+  personalInfo: 'Personal Information',
+  experiences: 'Work Experience',
+  education: 'Education',
+  skills: 'Skills',
+  languages: 'Languages',
+  projects: 'Projects',
+  certificates: 'Certificates',
+}
+
+export const SECTION_LABELS = SECTION_LABELS_AR

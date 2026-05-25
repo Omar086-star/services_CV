@@ -1,16 +1,68 @@
 'use client'
 
 import { useCVStore } from '@/lib/stores/cv-store'
+import { useSearchParams } from 'next/navigation'
 import { Mail, Phone, MapPin, Globe, Linkedin } from 'lucide-react'
 
 function formatDate(dateString: string) {
   if (!dateString) return ''
   const [year, month] = dateString.split('-')
-  const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
+const months = isEn
+? [
+'January',
+'February',
+'March',
+'April',
+'May',
+'June',
+'July',
+'August',
+'September',
+'October',
+'November',
+'December'
+]
+: [
+'يناير',
+'فبراير',
+'مارس',
+'أبريل',
+'مايو',
+'يونيو',
+'يوليو',
+'أغسطس',
+'سبتمبر',
+'أكتوبر',
+'نوفمبر',
+'ديسمبر'
+]
   return `${months[parseInt(month) - 1]} ${year}`
 }
 
 export function ModernTemplate() {
+  const searchParams = useSearchParams()
+const isEn = searchParams.get('lang') === 'en'
+
+const t = {
+  summary: isEn ? 'Summary' : 'نبذة مختصرة',
+  experiences: isEn ? 'Work Experience' : 'الخبرات العملية',
+  education: isEn ? 'Education' : 'التعليم',
+  projects: isEn ? 'Projects' : 'المشاريع',
+  skills: isEn ? 'Skills' : 'المهارات',
+  languages: isEn ? 'Languages' : 'اللغات',
+  certificates: isEn ? 'Certificates' : 'الشهادات',
+
+  current: isEn ? 'Present' : 'حتى الآن',
+  gpa: isEn ? 'GPA' : 'المعدل',
+
+  fullName: isEn
+    ? 'Full Name'
+    : 'الاسم الكامل',
+
+  jobTitle: isEn
+    ? 'Job Title'
+    : 'المسمى الوظيفي',
+}
   const { data, themeSettings, photoUrl, sectionOrder } = useCVStore()
   const { personalInfo, experiences, education, skills, languages, projects, certificates } = data
 
@@ -25,7 +77,7 @@ export function ModernTemplate() {
         return (
           <div key="experiences" className="mb-6">
             <h2 className="text-lg font-bold mb-3 pb-1 border-b-2" style={{ borderColor: themeSettings.primaryColor, color: themeSettings.primaryColor }}>
-              الخبرات العملية
+{t.experiences}
             </h2>
             <div className="space-y-4">
               {experiences.map((exp) => (
@@ -36,7 +88,7 @@ export function ModernTemplate() {
                       <p className="text-sm text-gray-600">{exp.company}</p>
                     </div>
                     <span className="text-xs text-gray-500" dir="ltr">
-                      {formatDate(exp.startDate)} - {exp.current ? 'حتى الآن' : formatDate(exp.endDate)}
+                      {formatDate(exp.startDate)} - {exp.current ? t.current  : formatDate(exp.endDate)}
                     </span>
                   </div>
                   {exp.description && (
@@ -52,7 +104,7 @@ export function ModernTemplate() {
         return (
           <div key="education" className="mb-6">
             <h2 className="text-lg font-bold mb-3 pb-1 border-b-2" style={{ borderColor: themeSettings.primaryColor, color: themeSettings.primaryColor }}>
-              التعليم
+{t.education}
             </h2>
             <div className="space-y-4">
               {education.map((edu) => (
@@ -67,7 +119,7 @@ export function ModernTemplate() {
                     </span>
                   </div>
                   {edu.gpa && (
-                    <p className="text-sm text-gray-600 mt-1">المعدل: {edu.gpa}</p>
+                    <p className="text-sm text-gray-600 mt-1"> {t.gpa}: {edu.gpa}</p>
                   )}
                 </div>
               ))}
@@ -79,7 +131,8 @@ export function ModernTemplate() {
         return (
           <div key="projects" className="mb-6">
             <h2 className="text-lg font-bold mb-3 pb-1 border-b-2" style={{ borderColor: themeSettings.primaryColor, color: themeSettings.primaryColor }}>
-              المشاريع
+              {t.projects}
+
             </h2>
             <div className="space-y-3">
               {projects.map((proj) => (
@@ -139,8 +192,8 @@ export function ModernTemplate() {
             </div>
           )}
           <div className="flex-1">
-            <h1 className="text-3xl font-bold">{personalInfo.fullName || 'الاسم الكامل'}</h1>
-            <p className="text-xl opacity-90 mt-1">{personalInfo.jobTitle || 'المسمى الوظيفي'}</p>
+            <h1 className="text-3xl font-bold">{personalInfo.fullName || t.fullName }</h1>
+            <p className="text-xl opacity-90 mt-1">{personalInfo.jobTitle || t.jobTitle }</p>
             <div className="flex flex-wrap gap-4 mt-4 text-sm opacity-90">
               {personalInfo.email && (
                 <span className="flex items-center gap-1">
@@ -187,7 +240,7 @@ export function ModernTemplate() {
           {personalInfo.summary && (
             <div className="mb-6">
               <h2 className="text-lg font-bold mb-3 pb-1 border-b-2" style={{ borderColor: themeSettings.primaryColor, color: themeSettings.primaryColor }}>
-                نبذة مختصرة
+{t.summary}
               </h2>
               <p className="text-sm text-gray-700 leading-relaxed">{personalInfo.summary}</p>
             </div>
@@ -203,7 +256,7 @@ export function ModernTemplate() {
           {skills.length > 0 && (
             <div className="mb-6">
               <h2 className="text-lg font-bold mb-3 pb-1 border-b-2" style={{ borderColor: themeSettings.primaryColor, color: themeSettings.primaryColor }}>
-                المهارات
+{t.skills}
               </h2>
               <div className="space-y-2">
                 {skills.map((skill) => (
@@ -222,7 +275,7 @@ export function ModernTemplate() {
           {languages.length > 0 && (
             <div className="mb-6">
               <h2 className="text-lg font-bold mb-3 pb-1 border-b-2" style={{ borderColor: themeSettings.primaryColor, color: themeSettings.primaryColor }}>
-                اللغات
+{t.languages}
               </h2>
               <div className="space-y-2">
                 {languages.map((lang) => (
@@ -241,7 +294,8 @@ export function ModernTemplate() {
           {certificates.length > 0 && (
             <div className="mb-6">
               <h2 className="text-lg font-bold mb-3 pb-1 border-b-2" style={{ borderColor: themeSettings.primaryColor, color: themeSettings.primaryColor }}>
-                الشهادات
+{t.certificates}
+
               </h2>
               <div className="space-y-3">
                 {certificates.map((cert) => (

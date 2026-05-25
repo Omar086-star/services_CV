@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { useReactToPrint } from 'react-to-print'
 import { Button } from '@/components/ui/button'
 import { Download } from 'lucide-react'
@@ -8,10 +9,13 @@ import { CVPreview } from './cv-preview'
 
 export function PDFExport() {
   const previewRef = useRef<HTMLDivElement>(null)
+  const searchParams = useSearchParams()
+
+  const isEn = searchParams.get('lang') === 'en'
 
   const handlePrint = useReactToPrint({
     contentRef: previewRef,
-    documentTitle: 'cv',
+    documentTitle: isEn ? 'resume' : 'cv',
     pageStyle: `
       @page {
         size: A4;
@@ -37,8 +41,8 @@ export function PDFExport() {
         className="w-full"
         size="lg"
       >
-        <Download className="h-5 w-5 ml-2" />
-        تحميل PDF
+        <Download className={isEn ? 'h-5 w-5 mr-2' : 'h-5 w-5 ml-2'} />
+        {isEn ? 'Download PDF' : 'تحميل PDF'}
       </Button>
 
       <div

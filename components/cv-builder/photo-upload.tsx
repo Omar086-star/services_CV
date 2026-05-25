@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { useCVStore } from '@/lib/stores/cv-store'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
@@ -10,11 +11,15 @@ export function PhotoUpload() {
   const { photoUrl, setPhotoUrl } = useCVStore()
   const [isUploading, setIsUploading] = useState(false)
 
+  const searchParams = useSearchParams()
+  const isEn = searchParams.get('lang') === 'en'
+
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
 
     setIsUploading(true)
+
     try {
       const formData = new FormData()
       formData.append('file', file)
@@ -32,7 +37,12 @@ export function PhotoUpload() {
       setPhotoUrl(pathname)
     } catch (error) {
       console.error('Upload error:', error)
-      alert('فشل في رفع الصورة. يرجى المحاولة مرة أخرى.')
+
+      alert(
+        isEn
+          ? 'Failed to upload the image. Please try again.'
+          : 'فشل في رفع الصورة. يرجى المحاولة مرة أخرى.'
+      )
     } finally {
       setIsUploading(false)
     }
@@ -42,23 +52,29 @@ export function PhotoUpload() {
     setPhotoUrl(null)
   }
 
-  const imageUrl = photoUrl ? `/api/file?pathname=${encodeURIComponent(photoUrl)}` : null
+  const imageUrl = photoUrl
+    ? `/api/file?pathname=${encodeURIComponent(photoUrl)}`
+    : null
 
   return (
     <div className="space-y-3">
-      <Label>الصورة الشخصية</Label>
+      <Label>
+        {isEn ? 'Profile Photo' : 'الصورة الشخصية'}
+      </Label>
+
       <div className="flex items-center gap-4">
         <div className="relative w-24 h-24 rounded-full bg-muted flex items-center justify-center overflow-hidden border-2 border-dashed border-border">
           {imageUrl ? (
             <img
               src={imageUrl}
-              alt="الصورة الشخصية"
+              alt={isEn ? 'Profile photo' : 'الصورة الشخصية'}
               className="w-full h-full object-cover"
             />
           ) : (
             <User className="w-10 h-10 text-muted-foreground" />
           )}
         </div>
+
         <div className="flex flex-col gap-2">
           <div className="relative">
             <input
@@ -68,6 +84,7 @@ export function PhotoUpload() {
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               disabled={isUploading}
             />
+
             <Button
               type="button"
               variant="outline"
@@ -76,17 +93,38 @@ export function PhotoUpload() {
             >
               {isUploading ? (
                 <>
-                  <Loader2 className="h-4 w-4 ml-2 animate-spin" />
-                  جارٍ الرفع...
+                  <Loader2
+                    className={
+                      isEn
+                        ? 'h-4 w-4 mr-2 animate-spin'
+                        : 'h-4 w-4 ml-2 animate-spin'
+                    }
+                  />
+
+                  {isEn ? 'Uploading...' : 'جارٍ الرفع...'}
                 </>
               ) : (
                 <>
-                  <Camera className="h-4 w-4 ml-2" />
-                  {photoUrl ? 'تغيير الصورة' : 'رفع صورة'}
+                  <Camera
+                    className={
+                      isEn
+                        ? 'h-4 w-4 mr-2'
+                        : 'h-4 w-4 ml-2'
+                    }
+                  />
+
+                  {photoUrl
+                    ? isEn
+                      ? 'Change Photo'
+                      : 'تغيير الصورة'
+                    : isEn
+                      ? 'Upload Photo'
+                      : 'رفع صورة'}
                 </>
               )}
             </Button>
           </div>
+
           {photoUrl && (
             <Button
               type="button"
@@ -95,14 +133,24 @@ export function PhotoUpload() {
               onClick={handleRemove}
               className="text-destructive hover:text-destructive"
             >
-              <Trash2 className="h-4 w-4 ml-2" />
-              إزالة الصورة
+              <Trash2
+                className={
+                  isEn
+                    ? 'h-4 w-4 mr-2'
+                    : 'h-4 w-4 ml-2'
+                }
+              />
+
+              {isEn ? 'Remove Photo' : 'إزالة الصورة'}
             </Button>
           )}
         </div>
       </div>
+
       <p className="text-xs text-muted-foreground">
-        الصيغ المدعومة: JPG, PNG, WebP (الحد الأقصى 5 ميجابايت)
+        {isEn
+          ? 'Supported formats: JPG, PNG, WebP (maximum 5 MB)'
+          : 'الصيغ المدعومة: JPG, PNG, WebP (الحد الأقصى 5 ميجابايت)'}
       </p>
     </div>
   )

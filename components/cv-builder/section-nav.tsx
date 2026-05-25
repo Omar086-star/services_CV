@@ -1,17 +1,19 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { useCVStore } from '@/lib/stores/cv-store'
-import { CVSection, SECTION_LABELS } from '@/lib/types/cv'
+import { CVSection, SECTION_LABELS_AR, SECTION_LABELS_EN } from '@/lib/types/cv'
 import { cn } from '@/lib/utils'
-import { 
-  User, 
-  Briefcase, 
-  GraduationCap, 
-  Wrench, 
-  Languages, 
-  FolderOpen, 
+import {
+  User,
+  Briefcase,
+  GraduationCap,
+  Wrench,
+  Languages,
+  FolderOpen,
   Award,
-  GripVertical
+  GripVertical,
 } from 'lucide-react'
 import {
   DndContext,
@@ -45,9 +47,15 @@ interface SortableSectionItemProps {
   section: CVSection
   isActive: boolean
   onClick: () => void
+  label: string
 }
 
-function SortableSectionItem({ section, isActive, onClick }: SortableSectionItemProps) {
+function SortableSectionItem({
+  section,
+  isActive,
+  onClick,
+  label,
+}: SortableSectionItemProps) {
   const {
     attributes,
     listeners,
@@ -71,8 +79,8 @@ function SortableSectionItem({ section, isActive, onClick }: SortableSectionItem
       style={style}
       className={cn(
         'flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors',
-        isActive 
-          ? 'bg-primary text-primary-foreground' 
+        isActive
+          ? 'bg-primary text-primary-foreground'
           : 'hover:bg-muted'
       )}
       onClick={onClick}
@@ -81,7 +89,9 @@ function SortableSectionItem({ section, isActive, onClick }: SortableSectionItem
         type="button"
         className={cn(
           'cursor-grab active:cursor-grabbing p-1 rounded',
-          isActive ? 'hover:bg-primary-foreground/20' : 'hover:bg-muted-foreground/20'
+          isActive
+            ? 'hover:bg-primary-foreground/20'
+            : 'hover:bg-muted-foreground/20'
         )}
         {...attributes}
         {...listeners}
@@ -89,14 +99,32 @@ function SortableSectionItem({ section, isActive, onClick }: SortableSectionItem
       >
         <GripVertical className="h-4 w-4" />
       </button>
+
       <Icon className="h-5 w-5" />
-      <span className="font-medium text-sm">{SECTION_LABELS[section]}</span>
+
+      <span className="font-medium text-sm">
+        {label}
+      </span>
     </div>
   )
 }
 
 export function SectionNav() {
-  const { activeSection, setActiveSection, sectionOrder, setSectionOrder } = useCVStore()
+  const searchParams = useSearchParams()
+  const isEn = searchParams.get('lang') === 'en'
+
+  const {
+    activeSection,
+    setActiveSection,
+    sectionOrder,
+    setSectionOrder,
+  } = useCVStore()
+
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -105,12 +133,17 @@ export function SectionNav() {
     })
   )
 
+  if (!mounted) return null
+
+  const labels = isEn ? SECTION_LABELS_EN : SECTION_LABELS_AR
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
 
     if (over && active.id !== over.id) {
       const oldIndex = sectionOrder.findIndex((s) => s === active.id)
       const newIndex = sectionOrder.findIndex((s) => s === over.id)
+
       setSectionOrder(arrayMove(sectionOrder, oldIndex, newIndex))
     }
   }
@@ -118,9 +151,11 @@ export function SectionNav() {
   return (
     <nav className="space-y-1">
       <p className="text-xs text-muted-foreground mb-2 px-3">
-        اسحب لإعادة ترتيب الأقسام
+        {isEn ? 'Drag to reorder sections' : 'اسحب لإعادة ترتيب الأقسام'}
       </p>
+
       <DndContext
+        id="cv-sections-dnd"
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
@@ -133,6 +168,7 @@ export function SectionNav() {
             <SortableSectionItem
               key={section}
               section={section}
+              label={labels[section]}
               isActive={activeSection === section}
               onClick={() => setActiveSection(section)}
             />

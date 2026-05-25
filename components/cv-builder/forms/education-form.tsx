@@ -1,5 +1,6 @@
 'use client'
 
+import { useSearchParams } from 'next/navigation'
 import { useCVStore } from '@/lib/stores/cv-store'
 import { Education } from '@/lib/types/cv'
 import { Button } from '@/components/ui/button'
@@ -7,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent } from '@/components/ui/card'
 import { Plus, Trash2, GripVertical } from 'lucide-react'
+
 import {
   DndContext,
   closestCenter,
@@ -16,6 +18,7 @@ import {
   useSensors,
   DragEndEvent,
 } from '@dnd-kit/core'
+
 import {
   arrayMove,
   SortableContext,
@@ -23,6 +26,7 @@ import {
   useSortable,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
+
 import { CSS } from '@dnd-kit/utilities'
 
 function generateId() {
@@ -33,9 +37,15 @@ interface SortableEducationItemProps {
   education: Education
   onUpdate: (id: string, data: Partial<Education>) => void
   onRemove: (id: string) => void
+  isEn: boolean
 }
 
-function SortableEducationItem({ education, onUpdate, onRemove }: SortableEducationItemProps) {
+function SortableEducationItem({
+  education,
+  onUpdate,
+  onRemove,
+  isEn,
+}: SortableEducationItemProps) {
   const {
     attributes,
     listeners,
@@ -54,7 +64,9 @@ function SortableEducationItem({ education, onUpdate, onRemove }: SortableEducat
   return (
     <Card ref={setNodeRef} style={style} className="relative">
       <CardContent className="p-4 space-y-4">
+
         <div className="flex items-center gap-2">
+
           <button
             type="button"
             className="cursor-grab active:cursor-grabbing p-1 hover:bg-muted rounded"
@@ -63,9 +75,15 @@ function SortableEducationItem({ education, onUpdate, onRemove }: SortableEducat
           >
             <GripVertical className="h-5 w-5 text-muted-foreground" />
           </button>
+
           <h4 className="font-medium flex-1">
-            {education.degree || education.institution || 'شهادة جديدة'}
+            {education.degree ||
+              education.institution ||
+              (isEn
+                ? 'New Education'
+                : 'شهادة جديدة')}
           </h4>
+
           <Button
             type="button"
             variant="ghost"
@@ -75,93 +93,238 @@ function SortableEducationItem({ education, onUpdate, onRemove }: SortableEducat
           >
             <Trash2 className="h-4 w-4" />
           </Button>
+
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
           <div className="space-y-2">
-            <Label>المؤسسة التعليمية *</Label>
+
+            <Label>
+              {isEn
+                ? 'Institution *'
+                : 'المؤسسة التعليمية *'}
+            </Label>
+
             <Input
               value={education.institution}
-              onChange={(e) => onUpdate(education.id, { institution: e.target.value })}
-              placeholder="جامعة الملك سعود"
+              onChange={(e) =>
+                onUpdate(
+                  education.id,
+                  {
+                    institution:e.target.value
+                  }
+                )
+              }
+              placeholder={
+                isEn
+                  ? 'Harvard University'
+                  : 'جامعة الملك سعود'
+              }
             />
+
           </div>
+
           <div className="space-y-2">
-            <Label>الدرجة العلمية *</Label>
+
+            <Label>
+              {isEn
+                ? 'Degree *'
+                : 'الدرجة العلمية *'}
+            </Label>
+
             <Input
               value={education.degree}
-              onChange={(e) => onUpdate(education.id, { degree: e.target.value })}
-              placeholder="بكالوريوس"
+              onChange={(e) =>
+                onUpdate(
+                  education.id,
+                  {
+                    degree:e.target.value
+                  }
+                )
+              }
+              placeholder={
+                isEn
+                  ? 'Bachelor Degree'
+                  : 'بكالوريوس'
+              }
             />
+
           </div>
+
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
           <div className="space-y-2">
-            <Label>التخصص</Label>
+
+            <Label>
+              {isEn
+                ? 'Field of Study'
+                : 'التخصص'}
+            </Label>
+
             <Input
               value={education.field}
-              onChange={(e) => onUpdate(education.id, { field: e.target.value })}
-              placeholder="علوم الحاسب"
+              onChange={(e) =>
+                onUpdate(
+                  education.id,
+                  {
+                    field:e.target.value
+                  }
+                )
+              }
+              placeholder={
+                isEn
+                  ? 'Computer Science'
+                  : 'علوم الحاسب'
+              }
             />
+
           </div>
+
           <div className="space-y-2">
-            <Label>المعدل التراكمي</Label>
+
+            <Label>
+              {isEn
+                ? 'GPA'
+                : 'المعدل التراكمي'}
+            </Label>
+
             <Input
               value={education.gpa || ''}
-              onChange={(e) => onUpdate(education.id, { gpa: e.target.value })}
+              onChange={(e) =>
+                onUpdate(
+                  education.id,
+                  {
+                    gpa:e.target.value
+                  }
+                )
+              }
               placeholder="3.8 / 4.0"
               dir="ltr"
               className="text-left"
             />
+
           </div>
+
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
           <div className="space-y-2">
-            <Label>تاريخ البداية</Label>
+
+            <Label>
+              {isEn
+                ? 'Start Date'
+                : 'تاريخ البداية'}
+            </Label>
+
             <Input
               type="month"
               value={education.startDate}
-              onChange={(e) => onUpdate(education.id, { startDate: e.target.value })}
+              onChange={(e) =>
+                onUpdate(
+                  education.id,
+                  {
+                    startDate:e.target.value
+                  }
+                )
+              }
               dir="ltr"
               className="text-left"
             />
+
           </div>
+
           <div className="space-y-2">
-            <Label>تاريخ التخرج</Label>
+
+            <Label>
+              {isEn
+                ? 'Graduation Date'
+                : 'تاريخ التخرج'}
+            </Label>
+
             <Input
               type="month"
               value={education.endDate}
-              onChange={(e) => onUpdate(education.id, { endDate: e.target.value })}
+              onChange={(e) =>
+                onUpdate(
+                  education.id,
+                  {
+                    endDate:e.target.value
+                  }
+                )
+              }
               dir="ltr"
               className="text-left"
             />
+
           </div>
+
         </div>
+
       </CardContent>
     </Card>
   )
 }
 
 export function EducationForm() {
-  const { data, addEducation, updateEducation, removeEducation, reorderEducation } = useCVStore()
+
+  const searchParams = useSearchParams()
+
+  const isEn =
+    searchParams.get('lang') === 'en'
+
+  const {
+    data,
+    addEducation,
+    updateEducation,
+    removeEducation,
+    reorderEducation
+  } = useCVStore()
+
   const { education } = data
 
   const sensors = useSensors(
     useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
+    useSensor(
+      KeyboardSensor,
+      {
+        coordinateGetter:
+          sortableKeyboardCoordinates,
+      }
+    )
   )
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = (
+    event: DragEndEvent
+  ) => {
+
     const { active, over } = event
 
-    if (over && active.id !== over.id) {
-      const oldIndex = education.findIndex((e) => e.id === active.id)
-      const newIndex = education.findIndex((e) => e.id === over.id)
-      reorderEducation(arrayMove(education, oldIndex, newIndex))
+    if (
+      over &&
+      active.id !== over.id
+    ) {
+
+      const oldIndex =
+        education.findIndex(
+          (e) => e.id === active.id
+        )
+
+      const newIndex =
+        education.findIndex(
+          (e) => e.id === over.id
+        )
+
+      reorderEducation(
+        arrayMove(
+          education,
+          oldIndex,
+          newIndex
+        )
+      )
     }
   }
 
@@ -178,43 +341,86 @@ export function EducationForm() {
   }
 
   return (
+
     <div className="space-y-4">
+
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">التعليم</h3>
-        <Button type="button" onClick={handleAdd} size="sm">
+
+        <h3 className="text-lg font-semibold">
+          {isEn
+            ? 'Education'
+            : 'التعليم'}
+        </h3>
+
+        <Button
+          type="button"
+          onClick={handleAdd}
+          size="sm"
+        >
           <Plus className="h-4 w-4 ml-2" />
-          إضافة شهادة
+
+          {isEn
+            ? 'Add Education'
+            : 'إضافة شهادة'}
         </Button>
+
       </div>
 
       {education.length === 0 ? (
+
         <div className="text-center py-8 text-muted-foreground border-2 border-dashed rounded-lg">
-          <p>لم تتم إضافة أي شهادات تعليمية بعد</p>
-          <p className="text-sm mt-1">انقر على &quot;إضافة شهادة&quot; للبدء</p>
+
+          <p>
+            {isEn
+              ? 'No education records yet'
+              : 'لم تتم إضافة أي شهادات تعليمية بعد'}
+          </p>
+
+          <p className="text-sm mt-1">
+
+            {isEn
+              ? 'Click Add Education to start'
+              : 'انقر على إضافة شهادة للبدء'}
+
+          </p>
+
         </div>
+
       ) : (
+
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
           onDragEnd={handleDragEnd}
         >
+
           <SortableContext
             items={education.map((e) => e.id)}
             strategy={verticalListSortingStrategy}
           >
+
             <div className="space-y-4">
+
               {education.map((edu) => (
+
                 <SortableEducationItem
                   key={edu.id}
                   education={edu}
                   onUpdate={updateEducation}
                   onRemove={removeEducation}
+                  isEn={isEn}
                 />
+
               ))}
+
             </div>
+
           </SortableContext>
+
         </DndContext>
+
       )}
+
     </div>
   )
 }
