@@ -14,41 +14,43 @@ export function PDFExport() {
   const handlePrint = useReactToPrint({
     contentRef: printRef,
     documentTitle: 'cv',
-    pageStyle: `
-      @page {
-        size: A4;
-        margin: 0;
-      }
+   pageStyle: `
+@page{
+  size:A4;
+  margin:0;
+}
 
-      html, body {
-        margin: 0 !important;
-        padding: 0 !important;
-        background: white !important;
-      }
+html,
+body{
+  margin:0 !important;
+  padding:0 !important;
+  overflow:hidden !important;
+  background:white !important;
+}
 
-      body * {
-        visibility: hidden !important;
-      }
+body > *{
+  display:none !important;
+}
 
-      #cv-print-area,
-      #cv-print-area * {
-        visibility: visible !important;
-      }
+#cv-print-area{
+  display:block !important;
+  visibility:visible !important;
+  position:absolute !important;
+  inset:0 !important;
+  width:210mm !important;
+  min-height:297mm !important;
+  background:#fff !important;
+}
 
-      #cv-print-area {
-        position: absolute !important;
-        left: 0 !important;
-        top: 0 !important;
-        width: 210mm !important;
-        min-height: 297mm !important;
-        background: white !important;
-      }
+#cv-print-area *{
+  visibility:visible !important;
+}
 
-      * {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-      }
-    `,
+*{
+  -webkit-print-color-adjust:exact !important;
+  print-color-adjust:exact !important;
+}
+`,
   })
 
   return (
@@ -64,18 +66,19 @@ export function PDFExport() {
 <p className="text-xs text-muted-foreground mt-2 text-center">
   على الهاتف اختر "حفظ كـ PDF" من نافذة الطباعة
 </p>
-      <div
-        id="cv-print-area"
-        ref={printRef}
-        style={{
-          width: '210mm',
-          minHeight: '297mm',
-          background: '#ffffff',
-          position: 'fixed',
-          left: '-9999px',
-          top: 0,
-        }}
-      >
+<div
+  id="cv-print-area"
+  ref={printRef}
+  style={{
+    position:'fixed',
+    left:'-99999px',
+    top:0,
+    width:'210mm',
+    minHeight:'297mm',
+    background:'#fff',
+    overflow:'hidden'
+  }}
+>
         {template === 'modern' ? <ModernTemplate /> : <MinimalTemplate />}
       </div>
     </>
