@@ -4,39 +4,27 @@ import { useCVStore } from '@/lib/stores/cv-store'
 import { useSearchParams } from 'next/navigation'
 import { Mail, Phone, MapPin, Globe, Linkedin } from 'lucide-react'
 
-function formatDate(dateString: string) {
-  if (!dateString) return ''
+function formatDate(dateString?: string, isEn = false) {
+  if (!dateString || !dateString.includes('-')) return ''
+
   const [year, month] = dateString.split('-')
-const months = isEn
-? [
-'January',
-'February',
-'March',
-'April',
-'May',
-'June',
-'July',
-'August',
-'September',
-'October',
-'November',
-'December'
-]
-: [
-'يناير',
-'فبراير',
-'مارس',
-'أبريل',
-'مايو',
-'يونيو',
-'يوليو',
-'أغسطس',
-'سبتمبر',
-'أكتوبر',
-'نوفمبر',
-'ديسمبر'
-]
-  return `${months[parseInt(month) - 1]} ${year}`
+  const monthIndex = Number(month) - 1
+
+  if (!year || Number.isNaN(monthIndex) || monthIndex < 0 || monthIndex > 11) {
+    return ''
+  }
+
+  const monthsAr = [
+    'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+    'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر',
+  ]
+
+  const monthsEn = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December',
+  ]
+
+  return `${isEn ? monthsEn[monthIndex] : monthsAr[monthIndex]} ${year}`
 }
 
 export function ModernTemplate() {
@@ -88,7 +76,7 @@ const t = {
                       <p className="text-sm text-gray-600">{exp.company}</p>
                     </div>
                     <span className="text-xs text-gray-500" dir="ltr">
-                      {formatDate(exp.startDate)} - {exp.current ? t.current  : formatDate(exp.endDate)}
+                      {formatDate(exp.startDate , isEn)} - {exp.current ? t.current  : formatDate(exp.endDate , isEn)}
                     </span>
                   </div>
                   {exp.description && (
@@ -115,7 +103,7 @@ const t = {
                       <p className="text-sm text-gray-600">{edu.institution}</p>
                     </div>
                     <span className="text-xs text-gray-500" dir="ltr">
-                      {formatDate(edu.startDate)} - {formatDate(edu.endDate)}
+                      {formatDate(edu.startDate , isEn)} - {formatDate(edu.endDate , isEn)}
                     </span>
                   </div>
                   {edu.gpa && (
@@ -303,7 +291,7 @@ const t = {
                     <h3 className="text-sm font-medium">{cert.name}</h3>
                     <p className="text-xs text-gray-600">{cert.issuer}</p>
                     {cert.date && (
-                      <p className="text-xs text-gray-500">{formatDate(cert.date)}</p>
+                      <p className="text-xs text-gray-500">{formatDate(cert.date , isEn)}</p>
                     )}
                   </div>
                 ))}

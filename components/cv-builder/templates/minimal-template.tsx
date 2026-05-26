@@ -39,7 +39,7 @@ export function MinimalTemplate() {
                       <p className="text-sm" style={{ color: themeSettings.primaryColor }}>{exp.company}</p>
                     </div>
                     <span className="text-sm text-gray-500 whitespace-nowrap" dir="ltr">
-                      {formatDate(exp.startDate)} - {exp.current ? 'حتى الآن' : formatDate(exp.endDate)}
+                      {formatDate(exp.startDate , isEn)} - {exp.current ? 'حتى الآن' : formatDate(exp.endDate , isEn)}
                     </span>
                   </div>
                   {exp.description && (
@@ -69,7 +69,7 @@ export function MinimalTemplate() {
                       <p className="text-sm" style={{ color: themeSettings.primaryColor }}>{edu.institution}</p>
                     </div>
                     <span className="text-sm text-gray-500 whitespace-nowrap" dir="ltr">
-                      {formatDate(edu.startDate)} - {formatDate(edu.endDate)}
+                      {formatDate(edu.startDate , isEn)} - {formatDate(edu.endDate , isEn)}
                     </span>
                   </div>
                   {edu.gpa && (
@@ -173,7 +173,7 @@ export function MinimalTemplate() {
                     <p className="text-sm text-gray-500">{cert.issuer}</p>
                   </div>
                   {cert.date && (
-                    <span className="text-sm text-gray-400">{formatDate(cert.date)}</span>
+                    <span className="text-sm text-gray-400">{formatDate(cert.date , isEn)}</span>
                   )}
                 </div>
               ))}

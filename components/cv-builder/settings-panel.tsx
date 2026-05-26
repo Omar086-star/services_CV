@@ -234,17 +234,21 @@ export function SettingsPanel() {
             </Label>
 
             <div className="flex gap-2">
-              <Input
-                type="color"
-                value={themeSettings.backgroundColor}
-                onChange={(e) =>
-                  updateThemeSetting(
-                    'backgroundColor',
-                    e.target.value
-                  )
-                }
-                className="w-10"
-              />
+<Input
+  type="text"
+  value={themeSettings.backgroundColor}
+  onChange={(e) => {
+    let value = e.target.value.trim()
+
+    if (!value.startsWith('#')) {
+      value = `#${value.replace('#', '')}`
+    }
+
+    updateThemeSetting('backgroundColor', value)
+  }}
+  className="flex-1 font-mono text-sm"
+  dir="ltr"
+/>
 
               <Input
                 value={themeSettings.backgroundColor}

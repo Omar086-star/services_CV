@@ -38,8 +38,26 @@ const almarai = Almarai({
 
 export const metadata: Metadata = {
   title: 'بناء السيرة الذاتية | CV Builder',
-  description: 'منصة احترافية لإنشاء السيرة الذاتية باللغة العربية',
-  generator: 'v0.app',
+ description:
+    'منصة مجانية لإنشاء سيرة ذاتية احترافية باللغة العربية والإنجليزية، مقدمة من مؤسسة نخلة لتنمية ورعاية الأمومة والطفولة.',
+   generator: 'EDU-NAKHLA',
+     keywords: [
+    'CV',
+    'Resume',
+    'سيرة ذاتية',
+    'بناء السيرة الذاتية',
+    'CV Builder',
+    'Nakhla Foundation',
+  ],
+  openGraph: {
+    title: 'منصة بناء السيرة الذاتية',
+    description: 'أنشئ سيرتك الذاتية بالعربية أو الإنجليزية خلال دقائق.',
+    url: 'https://servicecv.edu-web.fr',
+    siteName: 'CV Builder',
+    images: ['/opengraph-image.png'],
+    locale: 'ar_AR',
+    type: 'website',
+  },
   icons: {
     icon: [
       {

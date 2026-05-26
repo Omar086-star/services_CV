@@ -218,3 +218,19 @@
   background-color: #ffffff !important;
   color: #111827 !important;
 }
+
+
+@media print {
+
+  *{
+    color-scheme: light !important;
+  }
+
+  :root{
+    --background:#ffffff !important;
+    --foreground:#000000 !important;
+    --primary:#2563eb !important;
+    --muted:#f1f5f9 !important;
+  }
+
+}

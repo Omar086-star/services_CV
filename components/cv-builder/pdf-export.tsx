@@ -1,92 +1,82 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
+import { useReactToPrint } from 'react-to-print'
 import { Button } from '@/components/ui/button'
-import { Download, Loader2 } from 'lucide-react'
-import { CVPreview } from './cv-preview'
+import { Download } from 'lucide-react'
+import { useCVStore } from '@/lib/stores/cv-store'
+import { ModernTemplate, MinimalTemplate } from './templates'
 
 export function PDFExport() {
-  const pdfRef = useRef<HTMLDivElement>(null)
-  const [isExporting, setIsExporting] = useState(false)
+  const printRef = useRef<HTMLDivElement>(null)
+  const { template } = useCVStore()
 
-  const handleDownload = async () => {
-    if (!pdfRef.current) return
-
-    setIsExporting(true)
-
-    try {
-      const html2canvas = (await import('html2canvas')).default
-      const jsPDF = (await import('jspdf')).default
-
-      const canvas = await html2canvas(pdfRef.current, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#ffffff',
-        windowWidth: pdfRef.current.scrollWidth,
-      })
-
-      const imgData = canvas.toDataURL('image/png')
-
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4',
-      })
-
-      const pageWidth = 210
-      const pageHeight = 297
-      const imgWidth = pageWidth
-      const imgHeight = (canvas.height * imgWidth) / canvas.width
-
-      let heightLeft = imgHeight
-      let position = 0
-
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight)
-      heightLeft -= pageHeight
-
-      while (heightLeft > 0) {
-        position = heightLeft - imgHeight
-        pdf.addPage()
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight)
-        heightLeft -= pageHeight
+  const handlePrint = useReactToPrint({
+    contentRef: printRef,
+    documentTitle: 'cv',
+    pageStyle: `
+      @page {
+        size: A4;
+        margin: 0;
       }
 
-      pdf.save('cv.pdf')
-    } catch (error) {
-      console.error(error)
-      alert('فشل تحميل PDF')
-    } finally {
-      setIsExporting(false)
-    }
-  }
+      html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white !important;
+      }
+
+      body * {
+        visibility: hidden !important;
+      }
+
+      #cv-print-area,
+      #cv-print-area * {
+        visibility: visible !important;
+      }
+
+      #cv-print-area {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 210mm !important;
+        min-height: 297mm !important;
+        background: white !important;
+      }
+
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    `,
+  })
 
   return (
     <>
-      <Button
-        onClick={handleDownload}
-        className="w-full"
-        size="lg"
-        disabled={isExporting}
+  <Button
+  onClick={handlePrint}
+  className="w-full"
+  size="lg"
+>
+  <Download className="h-5 w-5 ml-2" />
+  طباعة / حفظ PDF
+</Button>
+<p className="text-xs text-muted-foreground mt-2 text-center">
+  على الهاتف اختر "حفظ كـ PDF" من نافذة الطباعة
+</p>
+      <div
+        id="cv-print-area"
+        ref={printRef}
+        style={{
+          width: '210mm',
+          minHeight: '297mm',
+          background: '#ffffff',
+          position: 'fixed',
+          left: '-9999px',
+          top: 0,
+        }}
       >
-        {isExporting ? (
-          <Loader2 className="h-5 w-5 ml-2 animate-spin" />
-        ) : (
-          <Download className="h-5 w-5 ml-2" />
-        )}
-        {isExporting ? 'جارٍ التحميل...' : 'تحميل PDF'}
-      </Button>
-
-      <div className="fixed -left-[99999px] top-0 bg-white">
-        <div
-          ref={pdfRef}
-          className="bg-white"
-          style={{
-            width: '210mm',
-            minHeight: '297mm',
-          }}
-        >
-          <CVPreview />
-        </div>
+        {template === 'modern' ? <ModernTemplate /> : <MinimalTemplate />}
       </div>
     </>
   )
